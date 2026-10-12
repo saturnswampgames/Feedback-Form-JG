@@ -1,10 +1,19 @@
 import { createClient } from "npm:@supabase/supabase-js@2.57.4";
 
 const allowedOrigins = new Set([
-  "https://saturnswampgames.github.io",
   "http://localhost:4173",
   "http://127.0.0.1:4173",
 ]);
+
+function isAllowedOrigin(origin: string) {
+  if (allowedOrigins.has(origin)) return true;
+  try {
+    const url = new URL(origin);
+    return url.protocol === "https:" && (url.hostname === "vercel.app" || url.hostname.endsWith(".vercel.app"));
+  } catch {
+    return false;
+  }
+}
 
 function responseHeaders(origin: string | null) {
   const headers = new Headers({
@@ -12,7 +21,7 @@ function responseHeaders(origin: string | null) {
     "Vary": "Origin",
     "Content-Type": "application/json; charset=utf-8",
   });
-  if (origin && allowedOrigins.has(origin)) {
+  if (origin && isAllowedOrigin(origin)) {
     headers.set("Access-Control-Allow-Origin", origin);
     headers.set("Access-Control-Allow-Headers", "authorization, apikey, content-type");
     headers.set("Access-Control-Allow-Methods", "POST, OPTIONS");
@@ -26,7 +35,7 @@ function json(body: unknown, status: number, origin: string | null) {
 
 Deno.serve(async (request: Request) => {
   const origin = request.headers.get("Origin");
-  if (origin && !allowedOrigins.has(origin)) return json({ error: "Origin not allowed." }, 403, null);
+  if (origin && !isAllowedOrigin(origin)) return json({ error: "Origin not allowed." }, 403, null);
   if (request.method === "OPTIONS") return new Response("ok", { headers: responseHeaders(origin) });
   if (request.method !== "POST") return json({ error: "Method not allowed." }, 405, origin);
 
