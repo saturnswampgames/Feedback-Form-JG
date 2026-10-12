@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#f5f5f1" />
+    <meta name="description" content="Share thoughtful feedback and help shape what comes next." />
+    <title>Product Feedback</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="/src/style.css" />
+  </head>
+  <body>
+    <div class="page-shell">
+      <header class="topbar">
+        <a class="wordmark" href="/" aria-label="Feedback portal home">
+          <span class="mark" aria-hidden="true"><span></span><span></span><span></span></span>
+          <span>FEEDBACK<span class="wordmark-light"> / PORTAL</span></span>
+        </a>
+        <div class="topbar-note"><span class="live-dot"></span> A better product starts with a good conversation</div>
+      </header>
+
+      <main>
+        <section class="intro" aria-labelledby="page-title">
+          <div class="eyebrow"><span class="eyebrow-line"></span> YOUR VOICE, IN THE ROOM</div>
+          <h1 id="page-title">Make the next<br /><em>version better.</em></h1>
+          <p class="intro-copy">Tell us what’s working, what’s getting in your way, or what you’d love to see next. The more specific, the more useful.</p>
+          <div class="trust-note">
+            <span class="trust-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none"><path d="M12 3.25 19 6v5.25c0 4.3-2.92 7.73-7 9.5-4.08-1.77-7-5.2-7-9.5V6l7-2.75Z" stroke="currentColor" stroke-width="1.6"/><path d="m9 12 2 2 4-4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </span>
+            <span><strong>Your details stay private.</strong><br />Only the product team can review submissions.</span>
+          </div>
+        </section>
+
+        <section class="form-card" aria-label="Feedback form">
+          <div class="card-topline">
+            <div><span class="card-step">01</span><span class="card-caption">A NOTE TO THE TEAM</span></div>
+            <span class="required-note"><span class="required-star">*</span> Required</span>
+          </div>
+
+          <form id="feedback-form" novalidate>
+            <div class="identity-grid">
+              <div class="field">
+                <label for="person-name">Your name <span class="required-star">*</span></label>
+                <input id="person-name" name="person_name" type="text" autocomplete="name" placeholder="How should we address you?" minlength="2" maxlength="100" required />
+              </div>
+              <div class="field">
+                <label for="email">Email address <span class="required-star">*</span></label>
+                <input id="email" name="email" type="email" autocomplete="email" placeholder="you@example.com" maxlength="254" required />
+              </div>
+            </div>
+
+            <fieldset class="field category-field">
+              <legend>What’s your feedback about? <span class="required-star">*</span></legend>
+              <div class="category-grid">
+                <label class="category-option"><input type="radio" name="category" value="UI/UX" required /><span class="category-icon">◌</span><span>UI / UX</span></label>
+                <label class="category-option"><input type="radio" name="category" value="Questionnaire" /><span class="category-icon">☷</span><span>Questionnaire</span></label>
+                <label class="category-option"><input type="radio" name="category" value="Workflow" /><span class="category-icon">↗</span><span>Workflow</span></label>
+                <label class="category-option"><input type="radio" name="category" value="Results" /><span class="category-icon">✳</span><span>Results</span></label>
+                <label class="category-option category-other"><input type="radio" name="category" value="Other" /><span class="category-icon">＋</span><span>Other</span></label>
+              </div>
+            </fieldset>
+
+            <div class="field message-field">
+              <div class="label-row"><label for="feedback">Your feedback <span class="required-star">*</span></label><span class="field-hint">A little detail goes a long way</span></div>
+              <textarea id="feedback" name="feedback_text" rows="6" minlength="20" maxlength="4000" placeholder="What happened? What did you expect? What would make it better?" required></textarea>
+              <div class="textarea-footer"><span id="char-count">0 / 4,000</span><span>At least 20 characters</span></div>
+            </div>
+
+            <div class="attachment-zone">
+              <label class="upload-control" for="attachments">
+                <span class="upload-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M12 16V4m0 0L7.5 8.5M12 4l4.5 4.5M5 14.5v3A2.5 2.5 0 0 0 7.5 20h9a2.5 2.5 0 0 0 2.5-2.5v-3" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+                <span class="upload-copy"><strong>Add a screenshot or document</strong><small>PNG, JPG, WEBP or PDF · Up to 3 files, 10 MB each</small></span>
+                <span class="upload-browse">Browse files</span>
+              </label>
+              <input id="attachments" class="visually-hidden" name="attachments" type="file" accept="image/png,image/jpeg,image/webp,application/pdf" multiple />
+              <div id="file-list" class="file-list" aria-live="polite"></div>
+            </div>
+
+            <div class="honeypot" aria-hidden="true"><label for="website">Leave this field empty</label><input id="website" name="website" tabindex="-1" autocomplete="off" /></div>
+
+            <div id="form-message" class="form-message" role="status" aria-live="polite"></div>
+            <button class="submit-button" id="submit-button" type="submit"><span>Send feedback</span><span class="button-arrow" aria-hidden="true">↗</span></button>
+            <p class="form-footnote">By sending this, you agree that the team may use your feedback to improve the product. We won’t publish your name or email.</p>
+          </form>
+        </section>
+      </main>
+
+      <footer class="footer"><span>THANK YOU FOR MAKING THINGS BETTER.</span><span>One thoughtful note can change a lot.</span></footer>
+    </div>
+    <script src="/config.js"></script>
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>
