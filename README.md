@@ -24,7 +24,7 @@ The `product_feedback` table is indexed by name, email, category, and date for i
 Admin accounts must be created by a project owner. Public sign-ups are not needed.
 
 1. In the Supabase dashboard, open **Authentication → Users** and add the admin user with their email and a strong password.
-2. In **SQL Editor**, grant that user's account export access by replacing the example email and running:
+2. In **SQL Editor**, grant that user's account export access by replacing the example email with the exact email used for the Auth user:
 
    ```sql
    insert into public.feedback_admins (user_id)
@@ -34,7 +34,7 @@ Admin accounts must be created by a project owner. Public sign-ups are not neede
    on conflict (user_id) do nothing;
    ```
 
-3. Open `/admin.html`, sign in with that account, and choose **Download Excel workbook**. The workbook includes submission time, name, email, category, full feedback, attachment paths, source page, and submission ID.
+3. Open `https://feedback-form-jg.vercel.app/admin.html`, sign in with that account, and choose **Download Excel workbook**. The workbook includes submission time, name, email, category, full feedback, attachment paths, source page, and submission ID.
 4. To remove access, delete that account's row from `public.feedback_admins`.
 
 The Edge Function checks the authenticated Supabase user against the allowlist before reading submissions. The server-side Supabase secret key never appears in the site or repository. The workbook is downloaded to the admin's device, so keep it in a private location.
@@ -43,7 +43,7 @@ The project includes `supabase/migrations/20261013000000_feedback_admin_allowlis
 
 ## Deploy
 
-The repository includes a GitHub Actions workflow for GitHub Pages. Enable **Settings → Pages → Build and deployment → Source: GitHub Actions** for the repository. After the workflow succeeds, GitHub shows the shareable page URL in that section.
+The site is deployed on Vercel from this repository. The Vercel deployment serves both the public form and the `/admin.html` export page. The Supabase Edge Function accepts Vercel `.vercel.app` origins and still requires an authenticated allowlisted admin.
 
 ## Run locally
 
