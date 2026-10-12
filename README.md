@@ -1,6 +1,6 @@
 # Product Feedback Portal
 
-A standalone, mobile-ready feedback form. It can be deployed independently and does not depend on the product application.
+A standalone, mobile-ready feedback form. It is deployed independently and does not depend on the product application.
 
 ## Features
 
@@ -9,18 +9,41 @@ A standalone, mobile-ready feedback form. It can be deployed independently and d
 - Accepts up to three PNG, JPG, WEBP, or PDF attachments (10 MB each).
 - Stores submissions in Supabase Postgres and files in a private Supabase Storage bucket.
 - Allows public inserts only. Visitors cannot read or download submitted feedback or attachments.
-- Indexed fields support internal sorting and filtering by name, email, category, and submission date in the Supabase dashboard.
-- No application runtime dependencies. Runs as a static website.
+- Includes a separate admin sign-in page at `/admin.html` with an Excel workbook export.
+- Admin access is allowlisted in a locked database table and checked by a server-side Supabase Edge Function.
+- No application runtime dependencies for the public feedback form.
 
 ## Supabase connection
 
-This portal is connected to a separate Supabase project named **Product Feedback Portal** in `ap-south-1`. The schema migration is applied, and `config.js` contains the browser-safe project URL and publishable key. The key is designed to be public; never put a secret or `service_role` key in browser code.
+This portal uses a separate Supabase project named **Product Feedback Portal** in `ap-south-1`. The schema migration is applied, and `config.js` contains the browser-safe project URL and publishable key. The key is designed to be public; never put a secret or `service_role` key in browser code.
 
-The `product_feedback` table is indexed by name, email, category, and date for internal review in the Supabase dashboard. Row-level security lets visitors submit feedback but does not let them read submissions. Attachments are stored in a private bucket and visitors can upload, but not list or download, files.
+The `product_feedback` table is indexed by name, email, category, and date for internal review. Row-level security lets visitors submit feedback but does not let them read submissions. Attachments are stored in a private bucket. Visitors can upload, but cannot list or download files.
 
-The repository includes a GitHub Actions workflow that publishes the site to GitHub Pages on pushes to `main`. After the first deployment succeeds, GitHub shows the shareable page URL under **Settings → Pages**.
+## Enable an admin account
 
-Only use a publishable key in `config.js`. Never place a secret or `service_role` key in browser code. The migration deliberately grants no visitor read access to names, email addresses, feedback, or files.
+Admin accounts must be created by a project owner. Public sign-ups are not needed.
+
+1. In the Supabase dashboard, open **Authentication → Users** and add the admin user with their email and a strong password.
+2. In **SQL Editor**, grant that user's account export access by replacing the example email and running:
+
+   ```sql
+   insert into public.feedback_admins (user_id)
+   select id
+   from auth.users
+   where lower(email) = lower('admin@example.com')
+   on conflict (user_id) do nothing;
+   ```
+
+3. Open `/admin.html`, sign in with that account, and choose **Download Excel workbook**. The workbook includes submission time, name, email, category, full feedback, attachment paths, source page, and submission ID.
+4. To remove access, delete that account's row from `public.feedback_admins`.
+
+The Edge Function checks the authenticated Supabase user against the allowlist before reading submissions. The server-side Supabase secret key never appears in the site or repository. The workbook is downloaded to the admin's device, so keep it in a private location.
+
+The project includes `supabase/migrations/20261013000000_feedback_admin_allowlist.sql` and the deployed function source at `supabase/functions/admin-feedback-export/index.ts`.
+
+## Deploy
+
+The repository includes a GitHub Actions workflow for GitHub Pages. Enable **Settings → Pages → Build and deployment → Source: GitHub Actions** for the repository. After the workflow succeeds, GitHub shows the shareable page URL in that section.
 
 ## Run locally
 
